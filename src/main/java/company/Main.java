@@ -22,7 +22,7 @@ import java.util.logging.SimpleFormatter;
 public class Main {
 
 
-    private static final Logger LOGGER = Logger.getLogger("I don't know.subnivel.debug");
+    private static final Logger LOGGER = Logger.getLogger("Logger.subnivel.debug");
 
 
     public static void main(String[] args) throws IncorrectSendMessageException, GamingAppInvalidBooleansException, SendMoneyException, SameIDException, IOException {

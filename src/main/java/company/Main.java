@@ -2,6 +2,7 @@ package company;
 
 import company.app.BankingApp;
 import company.app.GamingApp;
+import company.app.StreamingApp;
 import company.exceptions.GamingAppInvalidBooleansException;
 import company.exceptions.IncorrectSendMessageException;
 import company.exceptions.SameIDException;
@@ -12,8 +13,11 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.LinkedList;
+import java.util.HashMap;
 import java.util.Vector;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
+import java.util.function.UnaryOperator;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -40,8 +44,7 @@ public class Main {
         Company itCompany = new Company("IT Company", clients, employees);
         Seller sellerPaul = new Seller("Paul", 3, 1);
         Client clientSophie = new Client("Sophie", 2, "Gaming app", 12);
-        GamingApp sudoku = new GamingApp("Sudoku", "Gaming", false, false, false);
-        //Why doesn't it work?
+        //GamingApp sudoku = new GamingApp("Sudoku", "Gaming", false, false, false);
         GamingApp terraria = new GamingApp("Terraria", "Gaming", false, true, false);
 
         itCompany.addClient(clientSophie);
@@ -55,8 +58,8 @@ public class Main {
         //LOGGER.log(Level.INFO, "This is the cost for Sophie " + Accountant.calculateCost(sudoku, clientSophie));
         //LOGGER.log(Level.INFO, "This is the cost for Carol " + Accountant.calculateCost(sudoku, clientCarol));
 
-        LOGGER.log(Level.INFO, "This is the cost for Sophie " + Accountant.calculateCost(terraria, clientSophie));
-        LOGGER.log(Level.INFO, "This is the cost for Carol " + Accountant.calculateCost(terraria, clientCarol));
+        LOGGER.log(Level.INFO, "This is the cost for Sophie " + Accountant.calculateCostForClient(clientCarol, terraria));
+        LOGGER.log(Level.INFO, "This is the cost for Carol " + Accountant.calculateCostForClient(clientSophie, terraria));
 
         LOGGER.log(Level.INFO, developerPeter.sendMessage(accountantAnna, "I want my salary"));
         //developerPeter.sendMessage(sellerJohn, "Hi");
@@ -64,11 +67,23 @@ public class Main {
         BankingApp nationalBankApp = new BankingApp("National Bank app", "Banking", 100);
         //nationalBankApp.sendMoney(1000, itCompany);
 
-        {
-            LinkedList<Integer> ll = new LinkedList<Integer>();
-
-        }
+        StreamingApp netflix = new StreamingApp("Netflix", "Streaming app", 100, 100);
 
 
+        UnaryOperator<StreamingApp> addMovie = app -> app.newSetMovies(app);
+
+        Consumer<Client> welcome = client -> LOGGER.log(Level.INFO, "Welcome " + client.getName());
+
+        Predicate<Client> hasDiscount = client -> (client.getAntiquity() > 10);
+
+        HashMap<Employee, Double> employeeDoubleHashMap = new HashMap<Employee, Double>();
+        employeeDoubleHashMap.put(accountantAnna, Accountant.calculateSalary(accountantAnna));
+        employeeDoubleHashMap.put(sellerJohn, Accountant.calculateSalary(sellerPaul));
+        employeeDoubleHashMap.put(sellerPaul, Accountant.calculateSalary(sellerPaul));
+        employeeDoubleHashMap.put(developerPeter, Accountant.calculateSalary(developerPeter));
+
+        employeeDoubleHashMap.computeIfPresent(sellerJohn, (key, value) -> value + 100);
+
+        
     }
 }

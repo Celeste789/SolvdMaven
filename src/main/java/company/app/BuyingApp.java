@@ -36,4 +36,8 @@ public class BuyingApp extends App implements IMoneyApp {
         }
     }
 
+    @Override
+    public void receiveMoney(double amount) {
+        setBalance(balance + amount);
+    }
 }

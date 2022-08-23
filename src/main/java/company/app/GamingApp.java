@@ -28,17 +28,21 @@ public class GamingApp extends App implements IOnline {
         this.isTwoDimensions = isTwoDimensions;
         this.isThreeDimensions = isThreeDimensions;
 
-        if ((isMiniGame == true && isTwoDimensions == true) || (isMiniGame == true && isThreeDimensions == true) || (isTwoDimensions == true && isThreeDimensions)) {
+        if ((isMiniGame && isTwoDimensions) || (isMiniGame && isThreeDimensions) || (isTwoDimensions && isThreeDimensions)) {
             throw new GamingAppInvalidBooleansException("You can't have two trues in the same app");
+        }
+
+        if (!isMiniGame && !isTwoDimensions && !isThreeDimensions) {
+            throw new GamingAppInvalidBooleansException("You can't have 3 falses and no true");
         }
 
     }
 
 
     @Override
-    public double getRealCost(){
+    public double getRealCost() {
         double basicCost = getBasicCost();
-        if (isTwoDimensions){
+        if (isTwoDimensions) {
             basicCost += 1500;
         } else if (isThreeDimensions) {
             basicCost += 2500;
@@ -52,10 +56,10 @@ public class GamingApp extends App implements IOnline {
     }
 
     public void validateBools() throws GamingAppInvalidBooleansException {
-        if (isMiniGame == true && (isTwoDimensions || isThreeDimensions)) {
+        if (isMiniGame && (isTwoDimensions || isThreeDimensions)) {
             throw new GamingAppInvalidBooleansException("You can't have two trues in the same app");
         }
-        if (isThreeDimensions == false && isTwoDimensions == false && isMiniGame == false) {
+        if (!isThreeDimensions && !isTwoDimensions && !isMiniGame) {
             throw new GamingAppInvalidBooleansException("You can't have three falses in a same app");
         }
     }

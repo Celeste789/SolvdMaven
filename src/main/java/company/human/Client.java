@@ -3,17 +3,21 @@ package company.human;
 import company.app.App;
 import company.exceptions.IncorrectSendMessageException;
 
+import java.util.function.Consumer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 public class Client extends Human {
     private String typeOfApp;
+
+    private static final Logger LOGGER = Logger.getLogger("Logger.subnivel.debug");
 
     public Client(String name, int id, String typeOfApp, int antiquity) {
         super(name, id, antiquity);
         this.typeOfApp = typeOfApp;
     }
 
-    public String buyApp() {
-        return ("Hello I'd like to buy an app");
-    }
+    Consumer<Client> buyApp = client -> LOGGER.log(Level.INFO, "Hello, I'd like to buy an app");
 
     public void validateMessageReceiver(Human receiver) throws IncorrectSendMessageException {
         if (!(receiver.getClass().getName().equals("Seller"))) {

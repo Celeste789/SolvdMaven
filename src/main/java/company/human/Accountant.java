@@ -51,7 +51,9 @@ public class Accountant extends Employee {
         employeeSalaryMap.put(employee, Accountant.calculateSalary(employee));
     }
 
-    public static double calculateCost(App app, Client client) {
-        return app.getRealCost() - calculateDiscount(client);
+    public static double calculateCostForClient(Client client, App app) {
+        double cost = app.getRealCost() - calculateDiscount(client);
+        return cost;
     }
+
 }

@@ -39,4 +39,9 @@ public class BankingApp extends App implements IMoneyApp {
             throw new SendMoneyException("You can't send this amount of money");
         }
     }
+
+    @Override
+    public void receiveMoney(double amount) {
+        setBalance(balance + amount);
+    }
 }

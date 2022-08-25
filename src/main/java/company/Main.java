@@ -39,7 +39,7 @@ public class Main {
         Accountant accountantAnna = new Accountant("Anna", 2, 2);
         Developer developerPeter = new Developer("Peter", 3, 15);
         Client clientCarol = new Client("Carol", 1, "Gaming app", 2);
-        ArrayList<Client> clients = new ArrayList<Client>(Arrays.asList(clientCarol)); //???
+        ArrayList<Client> clients = new ArrayList<Client>(Arrays.asList(clientCarol));
         Vector<Employee> employees = new Vector<Employee>(Arrays.asList(sellerJohn, developerPeter, accountantAnna));
         Company itCompany = new Company("IT Company", clients, employees);
         Seller sellerPaul = new Seller("Paul", 3, 1);
@@ -76,14 +76,21 @@ public class Main {
 
         Predicate<Client> hasDiscount = client -> (client.getAntiquity() > 10);
 
+
         HashMap<Employee, Double> employeeDoubleHashMap = new HashMap<Employee, Double>();
         employeeDoubleHashMap.put(accountantAnna, Accountant.calculateSalary(accountantAnna));
         employeeDoubleHashMap.put(sellerJohn, Accountant.calculateSalary(sellerPaul));
         employeeDoubleHashMap.put(sellerPaul, Accountant.calculateSalary(sellerPaul));
-        employeeDoubleHashMap.put(developerPeter, Accountant.calculateSalary(developerPeter));
+        //employeeDoubleHashMap.put(developerPeter, Accountant.calculateSalary(developerPeter));
+        accountantAnna.addEmployee(developerPeter);
 
         employeeDoubleHashMap.computeIfPresent(sellerJohn, (key, value) -> value + 100);
 
-        
+        int amountOfDaysDeveloperPeter = Accountant.calculateDaysOfVacation(developerPeter, () -> developerPeter.getBasicAmount() + 5);
+
+        //accountantAnna.setEmployeeSalaryMap(employeeDoubleHashMap);
+
+        LOGGER.log(Level.INFO, String.valueOf((Accountant.calculateSalary(accountantAnna))));
     }
+
 }

@@ -6,7 +6,20 @@ import company.exceptions.SameIDException;
 
 public abstract class Employee extends Human {
     private double basicSalary;
+
+    public void setBasicAmount(int basicAmount) {
+        this.basicAmount = basicAmount;
+    }
+
     private String team;
+
+    private boolean hasBonus;
+
+    private int basicAmount = 15;
+
+    public int getBasicAmount() {
+        return basicAmount;
+    }
 
     public String getTeam() {
         return team;
@@ -17,7 +30,7 @@ public abstract class Employee extends Human {
         if (this.getClass().getName().equals("company.human.Seller")) {
             Seller seller = (Seller) this;
             return seller.basicSalary;
-        } else if (this.getClass().getName().equals("Accountant")) {
+        } else if (this.getClass().getName().equals("company.human.Accountant")) {
             Accountant accountant = (Accountant) this;
             return accountant.basicSalary;
         } else {
@@ -41,6 +54,10 @@ public abstract class Employee extends Human {
 
     public Employee(String name, int id, int antiquity) {
         super(name, id, antiquity);
+    }
+
+    public boolean isHasBonus() {
+        return hasBonus;
     }
 
     public String receiveSalary() {

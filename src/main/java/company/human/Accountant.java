@@ -2,13 +2,26 @@ package company.human;
 
 import company.app.App;
 import company.exceptions.IncorrectSendMessageException;
+import company.functional_interfaces.IAddVacationDays;
 
 import java.util.Map;
 
 public class Accountant extends Employee {
     public static double basicSalary = 350;
     private Map<Employee, Double> employeeSalaryMap;
+    //private Set<Map.Entry<Employee, Double>> toSet = employeeSalaryMap.entrySet();
 
+
+    //public Set<Map.Entry<Employee, Double>> getToSet() {
+    //return toSet;
+    // }
+
+    /*
+    public void setEmployeeSalaryMap(Map<Employee, Double> employeeSalaryMap) {
+        this.employeeSalaryMap = employeeSalaryMap;
+    }
+
+*/
     public Accountant(String name, int id, int antiquity) {
         super(name, id, antiquity);
     }
@@ -30,8 +43,7 @@ public class Accountant extends Employee {
         return receiver.receiveMessage(message);
     }
 
-    public static final double calculateSalary(Employee employee) {
-        //should the method name be in upper case? I googled but found nothing
+    public static final Double calculateSalary(Employee employee) {
         double salary = employee.getBasicSalary();
         if (employee.getAntiquity() >= 10) {
             salary += (employee.getAntiquity() - 10) * 50;
@@ -56,4 +68,16 @@ public class Accountant extends Employee {
         return cost;
     }
 
+
+    public static int calculateDaysOfVacation(Employee employee, IAddVacationDays addVacationDays) {
+        int basicAmount = employee.getBasicAmount();
+        if (employee.getAntiquity() > 3) {
+            basicAmount += employee.getAntiquity() - 3;
+        }
+        return basicAmount;
+    }
+
+    public Map<Employee, Double> getEmployeeSalaryMap() {
+        return employeeSalaryMap;
+    }
 }

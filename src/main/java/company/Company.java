@@ -11,6 +11,7 @@ public final class Company {
     private String name;
     private ArrayList<Client> clients;
 
+
     public String getName() {
         return name;
     }

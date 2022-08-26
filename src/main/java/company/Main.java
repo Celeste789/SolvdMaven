@@ -11,10 +11,7 @@ import company.human.*;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Vector;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
@@ -22,6 +19,7 @@ import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
+import java.util.stream.Stream;
 
 public class Main {
 
@@ -82,7 +80,7 @@ public class Main {
         employeeDoubleHashMap.put(sellerJohn, Accountant.calculateSalary(sellerPaul));
         employeeDoubleHashMap.put(sellerPaul, Accountant.calculateSalary(sellerPaul));
         //employeeDoubleHashMap.put(developerPeter, Accountant.calculateSalary(developerPeter));
-        accountantAnna.addEmployee(developerPeter);
+        //accountantAnna.addEmployee(developerPeter);
 
         employeeDoubleHashMap.computeIfPresent(sellerJohn, (key, value) -> value + 100);
 
@@ -91,6 +89,28 @@ public class Main {
         //accountantAnna.setEmployeeSalaryMap(employeeDoubleHashMap);
 
         LOGGER.log(Level.INFO, String.valueOf((Accountant.calculateSalary(accountantAnna))));
-    }
 
+        clients.stream().filter(client -> client.getName() == "Carol");
+
+
+        Set<Client> clients2 = new HashSet<>();
+        clients2.add(clientSophie);
+        clients2.add(clientCarol);
+        sellerJohn.setClients(clients2);
+
+        Set<Client> clientsSellerJohn = sellerJohn.getClients();
+
+        LOGGER.log(Level.INFO, "The amount of John's clients is " + clientsSellerJohn.stream().count());
+
+        Vector<Employee> employeeVector = new Vector<Employee>();
+        employeeVector.add(sellerJohn);
+        employeeVector.add(sellerPaul);
+
+        Vector<Employee> employeeVector1 = new Vector<Employee>();
+        employeeVector1.add(accountantAnna);
+        employeeVector1.add(developerPeter);
+
+        Stream.concat(employeeVector.stream(), employeeVector1.stream());
+
+    }
 }

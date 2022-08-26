@@ -37,4 +37,8 @@ public class Seller extends Employee {
         }
         return receiveMessage(message);
     }
+
+    public void setClients(Set<Client> clients) {
+        this.clients = clients;
+    }
 }

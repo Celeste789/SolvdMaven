@@ -1,11 +1,17 @@
 package company.human;
 
 import company.exceptions.IncorrectSendMessageException;
+import company.exceptions.NegativeAntiquityException;
+import company.exceptions.NotClientNorEmployeeException;
+
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public abstract class Human {
 
-    private int id;
-    private String name;
+    public final Logger LOGGER = Logger.getLogger("Logger warning");
+    final private int ID;
+    final private String NAME;
     private int antiquity;
 
     public boolean isClient() {
@@ -19,26 +25,24 @@ public abstract class Human {
     private boolean isClient;
     private boolean isEmployee;
 
-    public Human(int id, String name, int antiquity, boolean isClient, boolean isEmployee) {
-        this.id = id;
-        this.name = name;
+
+    public Human(int id, String name, int antiquity, boolean isClient, boolean isEmployee) throws NegativeAntiquityException, NotClientNorEmployeeException {
+        if (antiquity < 0) {
+            throw new NegativeAntiquityException("The antiquity can't be negative");
+        }
+        if (!isClient && !isEmployee) {
+            throw new NotClientNorEmployeeException("A person has to be a client or a employee");
+        }
+        this.ID = id;
+        this.NAME = name;
         this.antiquity = antiquity;
         this.isClient = isClient;
         this.isEmployee = isEmployee;
     }
 
-    public Human(String name, int id, int antiquity) {
-        this.antiquity = antiquity;
-        this.name = name;
-        this.id = id;
-    }
 
-    public int getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
+    public String getNAME() {
+        return NAME;
     }
 
     public int getAntiquity() {
@@ -49,7 +53,14 @@ public abstract class Human {
         return ("I received the message saying " + message);
     }
 
-    public abstract String sendMessage(Human receiver, String message) throws IncorrectSendMessageException;
+    public String sendMessage(Human receiver, String message) throws IncorrectSendMessageException {
+        try {
+            this.validateMessageReceiver(receiver);
+        } catch (IncorrectSendMessageException e) {
+            LOGGER.log(Level.WARNING, "You can't send a message to this person");
+        }
+        return receiver.receiveMessage(message);
+    }
 
     @Override
     public boolean equals(Object obj) {
@@ -60,16 +71,13 @@ public abstract class Human {
             return false;
         }
         Human human = (Human) obj;
-        return human.id == id && human.name == name && human.isClient == isClient && human.isEmployee == isEmployee;
+        return human.ID == ID && human.NAME == NAME && human.isClient == isClient && human.isEmployee == isEmployee;
     }
 
-    public void setAntiquity(int antiquity) {
-        this.antiquity = antiquity;
-    }
 
     public int hashCode() {
-        return id;
+        return ID;
     }
 
-
+    public abstract void validateMessageReceiver(Human receiver) throws IncorrectSendMessageException;
 }

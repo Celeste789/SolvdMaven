@@ -33,12 +33,15 @@ public class ClassFile {
         String files = String.valueOf(FileUtils.getFile("text.txt", "text2.txt", "text3.txt"));
         LOGGER.log(Level.INFO, files);
 
+
         //Rest of StringUtils methods
         String stringToCapitalize = "hello world";
         stringToCapitalize = stringToCapitalize.toUpperCase();
         LOGGER.log(Level.INFO, stringToCapitalize);
 
         String value = String.valueOf(10);
+
+        LOGGER.log(Level.INFO, value);
 
 
     }

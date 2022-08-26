@@ -1,29 +1,27 @@
 package company.human;
 
-import company.Company;
-import company.exceptions.IncorrectSendMessageException;
-import company.exceptions.SameIDException;
+import company.exceptions.NegativeAntiquityException;
+import company.exceptions.NotClientNorEmployeeException;
+
+import java.lang.reflect.Method;
+import java.util.logging.Level;
 
 public abstract class Employee extends Human {
     private double basicSalary;
 
-    public void setBasicAmount(int basicAmount) {
-        this.basicAmount = basicAmount;
-    }
-
-    private String team;
-
-    private boolean hasBonus;
-
     private int basicAmount = 15;
+
+    private String departmentsName;
+
+
+    public String getDepartmentsName() {
+        return departmentsName;
+    }
 
     public int getBasicAmount() {
         return basicAmount;
     }
 
-    public String getTeam() {
-        return team;
-    }
 
     public double getBasicSalary() {
         double basicSalary = this.basicSalary;
@@ -39,32 +37,18 @@ public abstract class Employee extends Human {
         }
     }
 
-    public Employee(int antiquity, String name, int id, double salary, Company company) throws SameIDException {
-        super(name, id, antiquity);
+    public Employee(int antiquity, String name, int id, double salary, String departmentsName) throws NegativeAntiquityException, NotClientNorEmployeeException {
+        super(id, name, antiquity, false, true);
         this.basicSalary = salary;
-        try {
-            for (Employee employee : company.getEmployees()) {
-                company.validateEmployeeID(employee);
-            }
-        } catch (SameIDException e) {
-            throw new SameIDException("This ID is already assigned");
+        this.departmentsName = departmentsName;
+    }
+
+
+    public void getMethods(Class employeeClass) {
+        for (Method method : employeeClass.getMethods()) {
+            LOGGER.log(Level.INFO, "The method is called " + method.getName());
         }
-
     }
 
-    public Employee(String name, int id, int antiquity) {
-        super(name, id, antiquity);
-    }
 
-    public boolean isHasBonus() {
-        return hasBonus;
-    }
-
-    public String receiveSalary() {
-        double salary = Accountant.calculateSalary(this);
-        return ("I received my salary for the amount of " + salary);
-    }
-
-    @Override
-    public abstract String sendMessage(Human receiver, String message) throws IncorrectSendMessageException;
 }

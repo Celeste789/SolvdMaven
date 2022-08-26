@@ -4,26 +4,36 @@ import company.exceptions.SameIDException;
 import company.human.Client;
 import company.human.Employee;
 
-import java.util.ArrayList;
-import java.util.Vector;
+import java.util.Optional;
+import java.util.Queue;
+import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.stream.Stream;
 
 public final class Company {
-    private String name;
-    private ArrayList<Client> clients;
+    public static final Logger LOGGER = Logger.getLogger("Logger.subnivel.info");
+
+    private Set<Employee> employees;
+    private static String name;
+    private Queue<Client> clients;
+
+    static {
+        LOGGER.log(Level.INFO, "Welcome to " + name);
+    }
+
 
     public String getName() {
         return name;
     }
 
-    public ArrayList<Client> getClients() {
+    public Queue<Client> getClients() {
         return clients;
     }
 
-    public Vector<Employee> getEmployees() {
+    public Set<Employee> getEmployees() {
         return employees;
     }
-
-    private Vector<Employee> employees;
 
     public void hireSomeone(Employee employee) throws SameIDException {
         try {
@@ -43,10 +53,10 @@ public final class Company {
     }
 
     public String paySalary(Employee employee) {
-        return ("Here's your salary " + employee.getName());
+        return ("Here's your salary " + employee.getNAME());
     }
 
-    public Company(String name, ArrayList<Client> clients, Vector<Employee> employees) {
+    public Company(String name, Queue<Client> clients, Set<Employee> employees) {
         this.name = name;
         this.clients = clients;
         this.employees = employees;
@@ -54,7 +64,7 @@ public final class Company {
 
     public void validateEmployeeID(Employee employeeToCheck) throws SameIDException {
         for (Employee employee : employees) {
-            if (employeeToCheck.getId() == employee.getId()) {
+            if (employeeToCheck.hashCode() == employee.hashCode()) {
                 throw new SameIDException("This ID is already assigned");
             }
         }
@@ -62,15 +72,36 @@ public final class Company {
 
     public void validateClientID(Client clientToCheck) throws SameIDException {
         for (Client client : this.clients) {
-            if (client.getId() == clientToCheck.getId()) {
+            if (client.hashCode() == clientToCheck.hashCode()) {
                 throw new SameIDException("This ID is already assigned");
             }
         }
     }
 
     public void fireEmployee(Employee employee) {
-        employees.remove(employees.indexOf(employee));
+        employees.remove(employee);
     }
 
+
+    public long amountOfClients() {
+        long result = clients.stream().count();
+        return result;
+    }
+
+    public Stream<Employee> filterByName(String name) {
+        Stream<Employee> employeeStream = employees.stream().filter(employee -> employee.getNAME() == name);
+        return employeeStream;
+    }
+
+    public void givePresentToFirstClient() {
+        Stream<Client> clientStream = clients.stream();
+        Optional<Client> client = clientStream.findFirst();
+        LOGGER.log(Level.INFO, "Congratulations " + client + " you won a price!");
+    }
+
+    public void printEmployees() {
+        Stream<Employee> employeeStream = employees.stream();
+        employeeStream.forEach(employee -> LOGGER.log(Level.INFO, employee.getNAME()));
+    }
 
 }

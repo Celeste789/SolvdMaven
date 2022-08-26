@@ -1,34 +1,39 @@
 package company.human;
 
-import company.app.App;
+import company.App;
+import company.enums.DepartmentName;
+import company.enums.TypesOfApp;
+import company.enums.TypesOfDiscount;
 import company.exceptions.IncorrectSendMessageException;
+import company.exceptions.NegativeAntiquityException;
+import company.exceptions.NotClientNorEmployeeException;
 import company.functional_interfaces.IAddVacationDays;
+import company.functional_interfaces.ICalculateBonus;
+import company.functional_interfaces.IHasBonus;
+import company.interfaces.ICalculateDiscount;
+import company.interfaces.IManageMoney;
 
-import java.util.Map;
+import java.util.function.BooleanSupplier;
+import java.util.function.DoubleSupplier;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-public class Accountant extends Employee {
+public class Accountant extends Employee implements ICalculateDiscount, IManageMoney {
+    private final Logger LOGGER = Logger.getLogger("Logger.warning");
+
+    public DepartmentName departmentName = DepartmentName.ACCOUNTANT;
+
     public static double basicSalary = 350;
-    private Map<Employee, Double> employeeSalaryMap;
-    //private Set<Map.Entry<Employee, Double>> toSet = employeeSalaryMap.entrySet();
 
 
-    //public Set<Map.Entry<Employee, Double>> getToSet() {
-    //return toSet;
-    // }
-
-    /*
-    public void setEmployeeSalaryMap(Map<Employee, Double> employeeSalaryMap) {
-        this.employeeSalaryMap = employeeSalaryMap;
+    public Accountant(String name, int id, int antiquity) throws NotClientNorEmployeeException, NegativeAntiquityException {
+        super(antiquity, name, id, basicSalary, "Accountants");
     }
 
-*/
-    public Accountant(String name, int id, int antiquity) {
-        super(name, id, antiquity);
-    }
-
+    @Override
     public void validateMessageReceiver(Human receiver) throws IncorrectSendMessageException {
         if (receiver.getClass().getName().equals("company.human.Client")) {
-            throw new IncorrectSendMessageException("You can't send a message to this person");
+            throw new IncorrectSendMessageException();
         }
     }
 
@@ -38,33 +43,49 @@ public class Accountant extends Employee {
         try {
             this.validateMessageReceiver(receiver);
         } catch (IncorrectSendMessageException e) {
-            throw new IncorrectSendMessageException("You can't send a message to clients");
+            LOGGER.log(Level.WARNING, "You can't send messages to this person");
         }
         return receiver.receiveMessage(message);
     }
 
-    public static final Double calculateSalary(Employee employee) {
-        double salary = employee.getBasicSalary();
-        if (employee.getAntiquity() >= 10) {
-            salary += (employee.getAntiquity() - 10) * 50;
-        }
-        return salary;
-    }
-
-    public static final double calculateDiscount(Client client) {
+    @Override
+    public double calculateDiscount(Client client, double discountOfTheDay, TypesOfDiscount typesOfDiscount) {
         double discount = 0;
-        if (client.getAntiquity() > 10) {
-            discount += 50 * (client.getAntiquity() - 10);
+        switch (typesOfDiscount) {
+            case ANTIQUITY_DISCOUNT:
+                if (client.getAntiquity() > typesOfDiscount.getCondition()) {
+                    discount = 10 * client.getAntiquity() - 10;
+                }
+                break;
+            case DISCOUNT_PER_APP:
+                if (client.getAmountOfApps() > typesOfDiscount.getCondition()) {
+                    discount = client.getAmountOfApps() * 2;
+                }
+                break;
+            default:
+                discount = discountOfTheDay;
         }
         return discount;
     }
 
-    public void addEmployee(Employee employee) {
-        employeeSalaryMap.put(employee, Accountant.calculateSalary(employee));
+    public static final Double calculateSalary(Employee employee, BooleanSupplier booleanSupplier, DoubleSupplier doubleSupplier) {
+        double salary = employee.getBasicSalary();
+        if (booleanSupplier.getAsBoolean()) {
+            salary = doubleSupplier.getAsDouble();
+        }
+        return salary;
     }
 
-    public static double calculateCostForClient(Client client, App app) {
-        double cost = app.getRealCost() - calculateDiscount(client);
+    public static double calculateBonus(IHasBonus hasBonus, ICalculateBonus iCalculateBonus) {
+        double bonus = 0;
+        if (hasBonus.hasBonus()) {
+            bonus = iCalculateBonus.iCalculateBonus();
+        }
+        return bonus;
+    }
+
+    public double calculateCostForClient(Client client, App app, TypesOfApp typesOfApp, double discountOfTheDay, TypesOfDiscount typesOfDiscount) {
+        double cost = app.getCost(typesOfApp) - this.calculateDiscount(client, discountOfTheDay, typesOfDiscount);
         return cost;
     }
 
@@ -72,12 +93,16 @@ public class Accountant extends Employee {
     public static int calculateDaysOfVacation(Employee employee, IAddVacationDays addVacationDays) {
         int basicAmount = employee.getBasicAmount();
         if (employee.getAntiquity() > 3) {
-            basicAmount += employee.getAntiquity() - 3;
+            basicAmount += addVacationDays.manageVacations();
         }
         return basicAmount;
     }
 
-    public Map<Employee, Double> getEmployeeSalaryMap() {
-        return employeeSalaryMap;
+    @Override
+    public double manageMoney(double total, double ins, double outs) {
+        total += ins - outs;
+        return total;
     }
+
+
 }

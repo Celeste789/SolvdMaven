@@ -7,4 +7,5 @@ public enum TypesOfApp {
     GAMING_APP,
     LIVES_STREAM_APP,
     STREAMING_APP;
+
 }

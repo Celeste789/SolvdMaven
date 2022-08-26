@@ -1,27 +1,33 @@
 package company.human;
 
-import company.app.App;
+import company.App;
 import company.exceptions.IncorrectSendMessageException;
+import company.exceptions.NegativeAntiquityException;
+import company.exceptions.NotClientNorEmployeeException;
 
-import java.util.function.Consumer;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class Client extends Human {
     private String typeOfApp;
+    private int amountOfApps;
+
+    public int getAmountOfApps() {
+        return amountOfApps;
+    }
 
     private static final Logger LOGGER = Logger.getLogger("Logger.subnivel.debug");
 
-    public Client(String name, int id, String typeOfApp, int antiquity) {
-        super(name, id, antiquity);
+    public Client(String name, int id, String typeOfApp, int antiquity, int amountOfApps) throws NegativeAntiquityException, NotClientNorEmployeeException {
+        super(id, name, antiquity, true, false);
         this.typeOfApp = typeOfApp;
+        this.amountOfApps = amountOfApps;
     }
 
-    Consumer<Client> buyApp = client -> LOGGER.log(Level.INFO, "Hello, I'd like to buy an app");
 
+    @Override
     public void validateMessageReceiver(Human receiver) throws IncorrectSendMessageException {
         if (!(receiver.getClass().getName().equals("Seller"))) {
-            throw new IncorrectSendMessageException("You can't send a message to someone other than sellers");
+            throw new IncorrectSendMessageException();
         }
     }
 
@@ -31,7 +37,7 @@ public class Client extends Human {
         try {
             this.validateMessageReceiver(receiver);
         } catch (IncorrectSendMessageException e) {
-            throw new IncorrectSendMessageException("You can't send a message to someone other than sellers");
+            throw new IncorrectSendMessageException();
         }
         return receiver.receiveMessage(message);
     }

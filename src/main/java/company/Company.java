@@ -23,6 +23,7 @@ public final class Company {
     }
 
 
+
     public String getName() {
         return name;
     }

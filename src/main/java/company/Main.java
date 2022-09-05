@@ -11,7 +11,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
-import java.time.LocalDateTime;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
@@ -20,12 +20,12 @@ import java.util.logging.SimpleFormatter;
 import java.util.stream.Stream;
 
 public class Main {
-    private static final Logger LOGGER = Logger.getLogger("Logger.subnivel.debug");
+    private static final Logger LOGGER = Logger.getLogger("Logger.sub level.debug");
 
     public static void main(String[] args) throws IllegalPositionException, IOException, NotClientNorEmployeeException, NegativeAntiquityException, SameIDException, NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException, IncorrectSendMessageException {
 
         SimpleFormatter simpleFormatter = new SimpleFormatter();
-        FileHandler fileHandler = new FileHandler(LocalDateTime.now().toString() + ".log");
+        FileHandler fileHandler = new FileHandler(new SimpleDateFormat("dd-MM-yyyy hh-mm-ss'.tsv'").format(new Date()) + ".log");
         fileHandler.setFormatter(simpleFormatter);
         LOGGER.addHandler(fileHandler);
 

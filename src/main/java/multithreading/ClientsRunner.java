@@ -16,26 +16,23 @@ public class ClientsRunner {
 
         final int MAX_THREADS = 7;
 
-        BlockingQueue<Runnable> queue = new LinkedBlockingQueue<Runnable>(MAX_THREADS);
+        BlockingQueue<Runnable> queue = new LinkedBlockingQueue<>(MAX_THREADS);
 
-        ThreadPoolExecutor executor1 = new ThreadPoolExecutor(MAX_THREADS, MAX_THREADS, 4, TimeUnit.SECONDS, queue);
+        ThreadPoolExecutor executor1 = new ThreadPoolExecutor(MAX_THREADS, MAX_THREADS, 3, TimeUnit.SECONDS, queue);
         for (int i = 0; i < MAX_THREADS; i++) {
-            Runnable connection = new Runnable() {
-                @Override
-                public void run() {
+            Runnable connection = () -> {
+                try {
+                    Connection connection1 = cp.getConnection();
+                    connection1.connect();
                     try {
-                        Connection connection = cp.getConnection();
-                        connection.connect();
-                        try {
-                            Thread.sleep(2000);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                        connection.disconnect();
-                        cp.finishConnection(connection);
-                    } catch (RuntimeException e) {
-                        System.err.println(e.getMessage());
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
                     }
+                    connection1.disconnect();
+                    cp.finishConnection(connection1);
+                } catch (RuntimeException e) {
+                    System.err.println(e.getMessage());
                 }
             };
             executor1.execute(connection);

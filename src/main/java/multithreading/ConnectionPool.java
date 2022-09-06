@@ -35,7 +35,7 @@ public class ConnectionPool {
             return connection;
 
         } else {
-            logger.info("There are no free slots, connection requests will get to queue...");
+            logger.info("There are no free connections at the moment");
             int maxAttemptsCount = 10;
             while (maxAttemptsCount-- > 0) {
                 try {
@@ -43,8 +43,6 @@ public class ConnectionPool {
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
-
-
                 if (connectionVector.size() < size) {
                     connection = new Connection("Thread#" + (connectionVector.size() + 1));
                     beginConnection(connection);

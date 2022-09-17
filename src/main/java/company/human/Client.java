@@ -1,7 +1,6 @@
 package company.human;
 
 import company.App;
-import company.exceptions.IncorrectSendMessageException;
 import company.exceptions.NegativeAntiquityException;
 import company.exceptions.NotClientNorEmployeeException;
 
@@ -10,6 +9,7 @@ import java.util.logging.Logger;
 public class Client extends Human {
     private String typeOfApp;
     private int amountOfApps;
+
 
     public int getAmountOfApps() {
         return amountOfApps;
@@ -21,28 +21,16 @@ public class Client extends Human {
         super(id, name, antiquity, true, false);
         this.typeOfApp = typeOfApp;
         this.amountOfApps = amountOfApps;
+
     }
 
-
-    @Override
-    public void validateMessageReceiver(Human receiver) throws IncorrectSendMessageException {
-        if (!(receiver.getClass().getName().equals("Seller"))) {
-            throw new IncorrectSendMessageException();
-        }
-    }
-
-
-    @Override
-    public String sendMessage(Human receiver, String message) throws IncorrectSendMessageException {
-        try {
-            this.validateMessageReceiver(receiver);
-        } catch (IncorrectSendMessageException e) {
-            throw new IncorrectSendMessageException();
-        }
-        return receiver.receiveMessage(message);
-    }
 
     public String receiveApp(App app) {
         return ("I received the app " + app.getName());
+    }
+
+    @Override
+    public boolean validateMessageReceiver(Human receiver) {
+        return receiver.getClass().getName().equals("company.Human");
     }
 }

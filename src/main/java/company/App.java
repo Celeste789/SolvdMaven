@@ -1,7 +1,5 @@
 package company;
 
-import company.enums.TypesOfApp;
-
 public class App {
     private String name;
     private String typeOfApp;
@@ -15,22 +13,23 @@ public class App {
         this.typeOfApp = typeOfApp;
     }
 
-    public double getCost(TypesOfApp typesOfApp) {
+    public double getCost() {
+        String typesOfApp = typeOfApp;
         double basicCost = 0;
         switch (typesOfApp) {
-            case BANKING_APP:
+            case "Banking App":
                 basicCost = 1000;
                 break;
-            case BUYING_APP:
+            case "Buying App":
                 basicCost = 1500;
                 break;
-            case COMMUNICATION_APP:
+            case "Communication App":
                 basicCost = 2000;
                 break;
-            case GAMING_APP:
+            case "Gaming App":
                 basicCost = 3000;
                 break;
-            case LIVES_STREAM_APP:
+            case "Lives stream App":
                 basicCost = 3500;
                 break;
             default:

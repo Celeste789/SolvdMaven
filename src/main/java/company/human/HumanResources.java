@@ -1,7 +1,5 @@
 package company.human;
 
-import company.enums.DepartmentName;
-import company.exceptions.IncorrectSendMessageException;
 import company.exceptions.NegativeAntiquityException;
 import company.exceptions.NotClientNorEmployeeException;
 
@@ -11,7 +9,10 @@ import java.util.function.IntUnaryOperator;
 public class HumanResources extends Employee {
     private static double basicSalary = 200;
     private Map<Employee, Boolean> isWorkingMap;
-    public DepartmentName departmentName = DepartmentName.HUMAN_RESOURCES;
+
+    public void addEmployeeToWorkingMap(Map<Employee, Boolean> isWorkingMap, Employee employee, boolean isWorking) {
+        isWorkingMap.put(employee, isWorking);
+    }
 
     public HumanResources(int antiquity, String name, int id, double salary, Map<Employee, Boolean> isWorkingMap) throws NegativeAntiquityException, NotClientNorEmployeeException {
         super(antiquity, name, id, salary, "Human Resources");
@@ -41,9 +42,7 @@ public class HumanResources extends Employee {
 
 
     @Override
-    public void validateMessageReceiver(Human receiver) throws IncorrectSendMessageException {
-        if (receiver.getClass().getName() == "company.human.Client") {
-            throw new IncorrectSendMessageException();
-        }
+    public boolean validateMessageReceiver(Human receiver) {
+        return !receiver.getClass().getName().equals("company.Human.Clients");
     }
 }

@@ -26,14 +26,11 @@ public abstract class Employee extends Human {
     public double getBasicSalary() {
         double basicSalary = this.basicSalary;
         if (this.getClass().getName().equals("company.human.Seller")) {
-            Seller seller = (Seller) this;
-            return seller.basicSalary;
+            return Seller.basicSalary;
         } else if (this.getClass().getName().equals("company.human.Accountant")) {
-            Accountant accountant = (Accountant) this;
-            return accountant.basicSalary;
+            return Accountant.basicSalary;
         } else {
-            Developer developer = (Developer) this;
-            return developer.basicSalary;
+            return Developer.basicSalary;
         }
     }
 

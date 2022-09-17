@@ -1,105 +1,67 @@
 package company;
 
-import company.enums.TypesOfApp;
-import company.enums.TypesOfDiscount;
 import company.exceptions.*;
 import company.human.*;
-import company.linkedlist.MyLinkedList;
 
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.Parameter;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
-import java.util.stream.Stream;
 
 public class Main {
     private static final Logger LOGGER = Logger.getLogger("Logger.sub level.debug");
 
-    public static void main(String[] args) throws IllegalPositionException, IOException, NotClientNorEmployeeException, NegativeAntiquityException, SameIDException, NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException, IncorrectSendMessageException {
+    public static void main(String[] args) throws IllegalPositionException, IOException, NotClientNorEmployeeException, NegativeAntiquityException, SameIDException, NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
 
         SimpleFormatter simpleFormatter = new SimpleFormatter();
         FileHandler fileHandler = new FileHandler(new SimpleDateFormat("dd-MM-yyyy hh-mm-ss'.tsv'").format(new Date()) + ".log");
         fileHandler.setFormatter(simpleFormatter);
         LOGGER.addHandler(fileHandler);
 
+        Map<Employee, Boolean> isWorkingMap = new HashMap<Employee, Boolean>();
+        Company company = new Company("Company");
+        Client client1 = new Client("Client1", 1, 0);
+        Client client2 = new Client("Client2", 2, 5);
+        Accountant accountant1 = new Accountant("Accountant1", 1, 3);
+        Accountant accountant2 = new Accountant("Accountant2", 2, 2);
+        Developer developer = new Developer(3, "Developer", 3, "developer.com");
+        Developer developer2 = new Developer(1, "Developer2", 4, "developer2.com");
+        HumanResources humanResources = new HumanResources(6, "Human Resources", 5);
+        HumanResources humanResources2 = new HumanResources(5, "Human Resources", 6);
+        Seller seller = new Seller("Seller", 7, 8);
+        Seller seller2 = new Seller("Seller2", 8, 10);
+        App app = new App("App1", "Gaming App");
+        App app2 = new App("App2", "Streaming App");
 
-        App netflix = new App("Netflix", "Streaming App");
-        Client clientCarol = new Client("Carol", 1, "Streaming App", 1, 1);
-        Developer developerMax = new Developer(10, "Max", 1, Developer.basicSalary, "git.com");
-        Accountant accountantAnna = new Accountant("Anna", 2, 10);
-        Class<Employee> employeeClass = Employee.class;
-        Method getBasicSalary = employeeClass.getMethod("getBasicSalary");
-        Parameter[] parameters = getBasicSalary.getParameters();
-        Class<Department> departmentClass = Department.class;
-        Department accountants = departmentClass.getConstructor(String.class).newInstance("Accountants");
-        Field[] employeeFields = employeeClass.getDeclaredFields();
-        HashSet<Employee> employees = new HashSet<>();
-        employees.add(developerMax);
-        employees.add(accountantAnna);
-        Queue<Client> clients = new PriorityQueue<>();
-        Company company = new Company("Company", clients, employees);
-        int departmentConstructorModifiers = departmentClass.getConstructor(String.class).getModifiers();
-        HashMap<Employee, Boolean> isWorking = new HashMap<>();
-        isWorking.put(developerMax, true);
-        isWorking.put(accountantAnna, false);
-        HumanResources humanResourcesJack = new HumanResources(10, "Jack", 4, 300, isWorking);
-        humanResourcesJack.beginLeave(developerMax);
-        humanResourcesJack.timeOfLeave(accountantAnna, true, i -> 3 + i, 2);
-        humanResourcesJack.finishLeave(accountantAnna);
-        Client clientSophie = new Client("Shophie", 2, "GamingApp", 20, 5);
-        Seller sellerJohn = new Seller("John", 5, 3);
-        Seller sellerPeter = new Seller("Peter", 6, 2);
-        ArrayList<Client> clientsJohn = new ArrayList<>();
-        ArrayList<Client> clientsPeter = new ArrayList<>();
-        sellerPeter.setClients(clientsPeter);
-        sellerJohn.setClients(clientsJohn);
-        sellerPeter.addAClient(clientSophie, "GamingApp");
-        sellerJohn.addAClient(clientCarol, "Streaming App");
-        Stream<Client> concatTwoSellers = Seller.concatTwoSellers(sellerJohn, sellerPeter);
-        LinkedList<Employee> employeeLinkedList = new LinkedList<>();
-        MyLinkedList<Employee> employeeMyLinkedList = new MyLinkedList<>();
-
-
-        double discountCarol = accountantAnna.calculateDiscount(clientCarol, 0, TypesOfDiscount.ANTIQUITY_DISCOUNT);
-        double bonusMax = Accountant.calculateBonus(() -> developerMax.getAntiquity() > 5, () -> 50);
-        int vacationDaysMax = Accountant.calculateDaysOfVacation(developerMax, () -> 3);
-        LinkedList<Employee> accountantsEmployees = accountants.returnDepartmentsEmployees(company);
-        Accountant.calculateSalary(developerMax, (() -> developerMax.getAntiquity() > 5), () -> 150);
-        double costCarol = accountantAnna.calculateCostForClient(clientCarol, netflix, TypesOfApp.STREAMING_APP, 100, TypesOfDiscount.DISCOUNT_PER_APP);
-        Stream<Employee> filterByName = company.filterByName("Max");
-        employeeMyLinkedList.insert(sellerJohn);
-        employeeMyLinkedList.insertAt(sellerPeter, 0);
-
-        LOGGER.log(Level.INFO, "The discount for Carol is " + discountCarol);
-        LOGGER.log(Level.INFO, "The bonus for Max is " + bonusMax);
-        LOGGER.log(Level.INFO, "Max has " + vacationDaysMax + " days of vacation");
-        LOGGER.log(Level.INFO, employeeClass.getName());
-        developerMax.getMethods(employeeClass);
-        for (Parameter parameter : parameters) {
-            LOGGER.log(Level.INFO, parameter.getName());
+        int sellerVacation = Accountant.calculateDaysOfVacation(seller, (() -> seller.getVipClients().mySize()));
+        try {
+            seller2.sendMessage(developer2, "Hi");
+        } catch (IncorrectSendMessageException e) {
+            LOGGER.log(Level.WARNING, "You can't send a message to this person");
         }
-        for (Employee accountant : accountantsEmployees) {
-            LOGGER.log(Level.INFO, accountant.getNAME());
+        LOGGER.log(Level.INFO, client1.receiveApp(app));
+        humanResources2.addEmployeeToWorkingMap(seller, true);
+        humanResources2.addEmployeeToWorkingMap(developer2, false);
+
+
+        humanResources2.beginLeave(seller);
+        seller.addAClient(client1);
+        for (Client client : seller.getClients()) {
+            LOGGER.log(Level.INFO, "This are seller's clients " + client.getNAME());
         }
-        for (Field field : employeeFields) {
-            LOGGER.log(Level.INFO, "The field name is " + field.getName());
-        }
-        LOGGER.log(Level.INFO, String.valueOf(departmentConstructorModifiers));
-        LOGGER.log(Level.INFO, "The cost for Carol is " + costCarol);
-        LOGGER.log(Level.INFO, clientCarol.receiveApp(netflix));
-        LOGGER.log(Level.INFO, developerMax.code());
-        LOGGER.log(Level.INFO, developerMax.sendMessage(accountantAnna, "Thanks for sending me my salary"));
-        LOGGER.log(Level.INFO, "The amount of clients of the company " + company.amountOfClients());
-        company.givePresentToFirstClient();
-        company.printEmployees();
-        Department.addEmployee(employeeLinkedList, sellerJohn);
-        employeeMyLinkedList.printLinkedList();
+        LOGGER.log(Level.INFO, "The cost of " + app2.getName() + " is " + app2.getCost());
+        LOGGER.log(Level.INFO, "The vacation days of " + seller.getNAME() + " is " + sellerVacation);
+
+        int timeOfLeaveDeveloper = humanResources.timeOfLeave(developer, true, (int leave) -> developer.getBasicAmountOfVacations() + 5);
+        LOGGER.log(Level.INFO, "The time of leave for " + developer.getNAME() + " is " + timeOfLeaveDeveloper);
+
+
+        isWorkingMap.forEach((key, value) -> System.out.println(key + ":" + value));
     }
 }

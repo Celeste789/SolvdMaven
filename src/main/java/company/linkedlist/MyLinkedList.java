@@ -33,10 +33,13 @@ public class MyLinkedList<T> {
         }
     }
 
-    public int size() {
+    public int mySize() {
+        if (head == null) {
+            return 0;
+        }
         int size = 0;
         Node<T> current = head;
-        while (current.next != null) {
+        while (current != null) {
             current = current.next;
             size++;
         }
@@ -46,7 +49,7 @@ public class MyLinkedList<T> {
 
     public void insertAt(T data, int position) throws IllegalPositionException {
         Node<T> nodeToInsert = new Node<T>(data);
-        if (position < 0 || position > this.size()) {
+        if (position < 0 || position > this.mySize()) {
             throw new IllegalPositionException("This is an illegal position");
         }
         if (position == 0) {

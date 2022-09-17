@@ -1,21 +1,24 @@
 package company.human;
 
-import company.enums.DepartmentName;
-import company.exceptions.IncorrectSendMessageException;
 import company.exceptions.NegativeAntiquityException;
 import company.exceptions.NotClientNorEmployeeException;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.function.IntUnaryOperator;
 
 public class HumanResources extends Employee {
     private static double basicSalary = 200;
-    private Map<Employee, Boolean> isWorkingMap;
-    public DepartmentName departmentName = DepartmentName.HUMAN_RESOURCES;
+    private Map<Employee, Boolean> isWorkingMap = new HashMap<Employee, Boolean>();
 
-    public HumanResources(int antiquity, String name, int id, double salary, Map<Employee, Boolean> isWorkingMap) throws NegativeAntiquityException, NotClientNorEmployeeException {
-        super(antiquity, name, id, salary, "Human Resources");
-        this.isWorkingMap = isWorkingMap;
+    public void addEmployeeToWorkingMap(Employee employee, boolean isWorking) {
+        Map<Employee, Boolean> workingMap = isWorkingMap;
+        workingMap.put(employee, isWorking);
+        setIsWorkingMap(workingMap);
+    }
+
+    public HumanResources(int antiquity, String name, int id) throws NegativeAntiquityException, NotClientNorEmployeeException {
+        super(antiquity, name, id, "Human Resources", basicSalary);
     }
 
     public void beginLeave(Employee employee) {
@@ -24,13 +27,18 @@ public class HumanResources extends Employee {
         }
     }
 
-    public int timeOfLeave(Employee employee, boolean extendsLeave, IntUnaryOperator operator, int minimumDaysAdded) {
-        int standarLeave = 10;
-        if (extendsLeave && this.isWorkingMap.get(employee)) {
+    public void setIsWorkingMap(Map<Employee, Boolean> isWorkingMap) {
+        this.isWorkingMap = isWorkingMap;
+    }
+
+    public int timeOfLeave(Employee employee, boolean extendsLeave, IntUnaryOperator operator) {
+        int standardLeave = 10;
+        int minimumDaysAdded = 3;
+        if (extendsLeave) {
             int extension = operator.applyAsInt(minimumDaysAdded);
-            standarLeave += extension;
+            standardLeave += extension;
         }
-        return standarLeave;
+        return standardLeave;
     }
 
     public void finishLeave(Employee employee) {
@@ -41,9 +49,7 @@ public class HumanResources extends Employee {
 
 
     @Override
-    public void validateMessageReceiver(Human receiver) throws IncorrectSendMessageException {
-        if (receiver.getClass().getName() == "company.human.Client") {
-            throw new IncorrectSendMessageException();
-        }
+    public boolean validateMessageReceiver(Human receiver) {
+        return !receiver.getClass().getName().equals("company.Human.Clients");
     }
 }

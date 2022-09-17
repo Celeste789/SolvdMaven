@@ -9,38 +9,31 @@ import java.util.logging.Level;
 public abstract class Employee extends Human {
     private double basicSalary;
 
-    private int basicAmount = 15;
+    private int basicAmountOfVacations = 15;
 
     private String departmentsName;
 
 
-    public String getDepartmentsName() {
-        return departmentsName;
-    }
-
-    public int getBasicAmount() {
-        return basicAmount;
+    public int getBasicAmountOfVacations() {
+        return basicAmountOfVacations;
     }
 
 
     public double getBasicSalary() {
         double basicSalary = this.basicSalary;
         if (this.getClass().getName().equals("company.human.Seller")) {
-            Seller seller = (Seller) this;
-            return seller.basicSalary;
+            return Seller.basicSalary;
         } else if (this.getClass().getName().equals("company.human.Accountant")) {
-            Accountant accountant = (Accountant) this;
-            return accountant.basicSalary;
+            return Accountant.basicSalary;
         } else {
-            Developer developer = (Developer) this;
-            return developer.basicSalary;
+            return Developer.basicSalary;
         }
     }
 
-    public Employee(int antiquity, String name, int id, double salary, String departmentsName) throws NegativeAntiquityException, NotClientNorEmployeeException {
+    public Employee(int antiquity, String name, int id, String departmentsName, double basicSalary) throws NegativeAntiquityException, NotClientNorEmployeeException {
         super(id, name, antiquity, false, true);
-        this.basicSalary = salary;
         this.departmentsName = departmentsName;
+        this.basicSalary = basicSalary;
     }
 
 

@@ -4,7 +4,6 @@ import company.exceptions.IncorrectSendMessageException;
 import company.exceptions.NegativeAntiquityException;
 import company.exceptions.NotClientNorEmployeeException;
 
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public abstract class Human {
@@ -53,14 +52,6 @@ public abstract class Human {
         return ("I received the message saying " + message);
     }
 
-    public String sendMessage(Human receiver, String message) throws IncorrectSendMessageException {
-        try {
-            this.validateMessageReceiver(receiver);
-        } catch (IncorrectSendMessageException e) {
-            LOGGER.log(Level.WARNING, "You can't send a message to this person");
-        }
-        return receiver.receiveMessage(message);
-    }
 
     @Override
     public boolean equals(Object obj) {
@@ -79,5 +70,12 @@ public abstract class Human {
         return ID;
     }
 
-    public abstract void validateMessageReceiver(Human receiver) throws IncorrectSendMessageException;
+    public abstract boolean validateMessageReceiver(Human receiver);
+
+    public String sendMessage(Human receiver, String message) throws IncorrectSendMessageException {
+        if (!validateMessageReceiver(receiver)) {
+            throw new IncorrectSendMessageException();
+        }
+        return message;
+    }
 }

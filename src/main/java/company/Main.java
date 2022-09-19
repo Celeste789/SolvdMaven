@@ -62,6 +62,5 @@ public class Main {
         LOGGER.log(Level.INFO, "The time of leave for " + developer.getNAME() + " is " + timeOfLeaveDeveloper);
 
 
-        isWorkingMap.forEach((key, value) -> System.out.println(key + ":" + value));
     }
 }

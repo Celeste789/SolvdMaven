@@ -7,8 +7,6 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -24,7 +22,7 @@ public class Main {
         fileHandler.setFormatter(simpleFormatter);
         LOGGER.addHandler(fileHandler);
 
-        Map<Employee, Boolean> isWorkingMap = new HashMap<Employee, Boolean>();
+
         Company company = new Company("Company");
         Client client1 = new Client("Client1", 1, 0);
         Client client2 = new Client("Client2", 2, 5);
